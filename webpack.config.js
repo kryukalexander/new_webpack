@@ -51,9 +51,6 @@ let config = {
                                 sourceMap: true
                             }
                         },
-                        
-
-                        
                     ]
                 })
             },
