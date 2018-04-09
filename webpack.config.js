@@ -70,7 +70,7 @@ let config = {
 
             {
                 test: /\.(jpe?g|png|gif|svg)$/i,
-                exclude: [ path.resolve('images', 'icons-svg'), path.resolve('images', 'images-sprite')],
+                exclude: [ path.resolve('images/icons-svg'), path.resolve('images/images-sprite')],
                 use: [
                     'url-loader?limit=1500&name=[path][name].[ext]',
                     'img-loader'
