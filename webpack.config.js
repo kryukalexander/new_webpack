@@ -6,10 +6,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 let config = {
     context: path.resolve(__dirname, 'src'),
-    entry: [
-        './js/index.js',
-        './css/style.scss'
-    ],
+    entry: { main: './js/index.js' },
     output: {
         filename: './js/bundle.js'
     },
