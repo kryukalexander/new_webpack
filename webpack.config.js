@@ -31,10 +31,7 @@ let config = {
                     use: [
                         {
                             loader: "css-loader",
-                            options: {
-                                sourceMap: true,
-                                url: false
-                            }
+                            options: { sourceMap: true }
                         },
 
                         {
@@ -44,11 +41,10 @@ let config = {
 
                         {
                             loader: "sass-loader",
-                            options: {
-                                sourceMap: true
-                            }
+                            options: { sourceMap: true }
                         },
-                    ]
+                    ],
+                    publicPath: '../'
                 })
             },
 
@@ -64,10 +60,27 @@ let config = {
 
             {
                 test: /\.(jpe?g|png|gif|svg)$/i,
-                exclude: [ path.resolve('images/icons-svg'), path.resolve('images/images-sprite')],
+                exclude: [ path.resolve('images/images-sprite')],
                 use: [
                     'url-loader?limit=1500&name=[path][name].[ext]',
-                    'img-loader'
+                    {
+                        loader: 'img-loader',
+                        options: {
+                            plugins: [
+                                require('imagemin-gifsicle')({}),
+                                require('imagemin-mozjpeg')({}),
+                                require('imagemin-optipng')({}),
+                                require('imagemin-svgo')({})
+                            ]
+                        }
+                    }
+                ]
+            },
+
+            {
+                test: /\.(woff|woff2|ttf)$/i,
+                use: [
+                    'file-loader?name=[path][name].[ext]',
                 ]
             },
         ]
@@ -88,11 +101,6 @@ let config = {
         ),
 
         new CopyWebpackPlugin([
-            {
-                from: './fonts',
-                to: './fonts',
-                ignore: '.*'
-            },
 
             {
                 from: './images/sprite.png',
@@ -103,5 +111,3 @@ let config = {
 };
 
 module.exports = config;
-
-// todo Add postcss
