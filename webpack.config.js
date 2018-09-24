@@ -59,16 +59,26 @@ let config = {
             },
 
             {
-                test: /\.(jpe?g|png|gif)$/i,
+                test: /\.(jpe?g|png|gif|svg)$/i,
                 exclude: [ path.resolve('images/images-sprite')],
                 use: [
                     'url-loader?limit=1500&name=[path][name].[ext]',
-                    'img-loader'
+                    {
+                        loader: 'img-loader',
+                        options: {
+                            plugins: [
+                                require('imagemin-gifsicle')({}),
+                                require('imagemin-mozjpeg')({}),
+                                require('imagemin-optipng')({}),
+                                require('imagemin-svgo')({})
+                            ]
+                        }
+                    }
                 ]
             },
 
             {
-                test: /\.(svg|woff|woff2|ttf)$/i,
+                test: /\.(woff|woff2|ttf)$/i,
                 use: [
                     'file-loader?name=[path][name].[ext]',
                 ]
