@@ -1,15 +1,14 @@
 const path = require('path');
+const merge = require('webpack-merge');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-let config = {
+const common = merge([{
     context: path.resolve(__dirname, 'src'),
     entry: { main: './js/index.js' },
-    output: {
-        filename: './js/bundle.js'
-    },
+    output: { filename: './js/bundle.js' },
     devtool: "source-map",
     module: {
         rules: [
@@ -85,7 +84,6 @@ let config = {
             },
         ]
     },
-
     plugins: [
         new CleanWebpackPlugin(['dist']),
         new ExtractTextPlugin({
@@ -108,6 +106,7 @@ let config = {
             },
         ]),
     ]
-};
+}]);
 
+const config = merge(common);
 module.exports = config;
