@@ -1,8 +1,10 @@
 const path = require('path');
 const merge = require('webpack-merge');
-const styles = require('./webpack/styles');
+const styles = require('./webpack/stylesExtract');
 const scripts = require('./webpack/scripts');
 const images = require('./webpack/images');
+const fonts = require('./webpack/fonts');
+const templates = require('./webpack/templates');
 
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -17,40 +19,17 @@ const common = merge([{
     context: source,
     entry: { main: './js/index.js' },
     output: { filename: './js/bundle.js' },
-    devtool: "source-map",
-    module: {
-        rules: [
+    devtool: 'source-map',
 
-            {
-                test: /\.html$/,
-                use: [
-                    {
-                        loader: 'html-loader',
-                        options: { minimize: false }
-                    }
-                ]
-            },
-
-            {
-                test: /\.(woff|woff2|ttf)$/i,
-                use: [
-                    'file-loader?name=[path][name].[ext]',
-                ]
-            },
-        ]
-    },
     plugins: [
         new CleanWebpackPlugin(['dist']),
-
         new HtmlWebpackPlugin(
             {
                 template: './templates/index.html',
                 filename: './index.html'
             }
         ),
-
         new CopyWebpackPlugin([
-
             {
                 from: './images/sprite.png',
                 to: './images/sprite.png'
@@ -64,7 +43,9 @@ const config = merge(
         common, 
         styles(cssFolders),
         scripts(jsFolders),
-        images(ignoredImages)
+        images(ignoredImages),
+        fonts(),
+        templates(),
     ]
 );
 module.exports = config;

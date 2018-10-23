@@ -1,0 +1,12 @@
+$color: red;
+
+h1 {
+    color: $color;
+    text-align: center;
+}
+
+.test {
+    background: url("../images/test.jpg");
+    height: 400px;
+    width: 400px;
+}

@@ -1,13 +1,2 @@
+@import 'base';
 @import 'sprite';
-$color: red;
-
-
-h1 {
-    color: $color;
-}
-
-.test {
-    background: url("../images/test.jpg");
-    height: 400px;
-    width: 400px;
-}
