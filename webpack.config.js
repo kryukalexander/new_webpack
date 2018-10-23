@@ -1,12 +1,17 @@
 const path = require('path');
 const merge = require('webpack-merge');
+const styles = require('./webpack/styles');
+
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
+const source = path.resolve(__dirname, 'src');
+const cssFolders = path.resolve(__dirname, 'src', 'css');
+const jsFolders = path.resolve(__dirname, 'src', 'js');
+
 const common = merge([{
-    context: path.resolve(__dirname, 'src'),
+    context: source,
     entry: { main: './js/index.js' },
     output: { filename: './js/bundle.js' },
     devtool: "source-map",
@@ -14,37 +19,13 @@ const common = merge([{
         rules: [
             {
                 test: /\.js$/,
-                include: path.resolve(__dirname, 'src/js'),
+                include: jsFolders,
                 use: {
                     loader: 'babel-loader',
                     options: {
                         presets: 'env'
                     }
                 }
-            },
-
-            {
-                test: /\.(sass|scss)$/,
-                include: path.resolve(__dirname, 'src/css'),
-                use: ExtractTextPlugin.extract({
-                    use: [
-                        {
-                            loader: "css-loader",
-                            options: { sourceMap: true }
-                        },
-
-                        {
-                            loader: 'postcss-loader',
-                            options: { sourceMap: true }
-                        },
-
-                        {
-                            loader: "sass-loader",
-                            options: { sourceMap: true }
-                        },
-                    ],
-                    publicPath: '../'
-                })
             },
 
             {
@@ -59,7 +40,7 @@ const common = merge([{
 
             {
                 test: /\.(jpe?g|png|gif|svg)$/i,
-                exclude: [ path.resolve('images/images-sprite')],
+                exclude: path.resolve(__dirname, 'images/images-sprite'),
                 use: [
                     'url-loader?limit=1500&name=[path][name].[ext]',
                     {
@@ -86,10 +67,6 @@ const common = merge([{
     },
     plugins: [
         new CleanWebpackPlugin(['dist']),
-        new ExtractTextPlugin({
-            filename: './css/style.css',
-            allChunks: true,
-        }),
 
         new HtmlWebpackPlugin(
             {
@@ -108,5 +85,10 @@ const common = merge([{
     ]
 }]);
 
-const config = merge(common);
+const config = merge(
+    [
+        common, 
+        styles(cssFolders)
+    ]
+);
 module.exports = config;
