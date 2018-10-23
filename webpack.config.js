@@ -1,6 +1,8 @@
 const path = require('path');
 const merge = require('webpack-merge');
 const styles = require('./webpack/styles');
+const scripts = require('./webpack/scripts');
+const images = require('./webpack/images');
 
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -9,6 +11,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const source = path.resolve(__dirname, 'src');
 const cssFolders = path.resolve(__dirname, 'src', 'css');
 const jsFolders = path.resolve(__dirname, 'src', 'js');
+const ignoredImages = path.resolve(__dirname, 'images', 'images-sprite');
 
 const common = merge([{
     context: source,
@@ -17,16 +20,6 @@ const common = merge([{
     devtool: "source-map",
     module: {
         rules: [
-            {
-                test: /\.js$/,
-                include: jsFolders,
-                use: {
-                    loader: 'babel-loader',
-                    options: {
-                        presets: 'env'
-                    }
-                }
-            },
 
             {
                 test: /\.html$/,
@@ -34,25 +27,6 @@ const common = merge([{
                     {
                         loader: 'html-loader',
                         options: { minimize: false }
-                    }
-                ]
-            },
-
-            {
-                test: /\.(jpe?g|png|gif|svg)$/i,
-                exclude: path.resolve(__dirname, 'images/images-sprite'),
-                use: [
-                    'url-loader?limit=1500&name=[path][name].[ext]',
-                    {
-                        loader: 'img-loader',
-                        options: {
-                            plugins: [
-                                require('imagemin-gifsicle')({}),
-                                require('imagemin-mozjpeg')({}),
-                                require('imagemin-optipng')({}),
-                                require('imagemin-svgo')({})
-                            ]
-                        }
                     }
                 ]
             },
@@ -88,7 +62,9 @@ const common = merge([{
 const config = merge(
     [
         common, 
-        styles(cssFolders)
+        styles(cssFolders),
+        scripts(jsFolders),
+        images(ignoredImages)
     ]
 );
 module.exports = config;
