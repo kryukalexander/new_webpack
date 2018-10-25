@@ -1,12 +1,14 @@
 const path = require('path');
 const merge = require('webpack-merge');
-const styles = require('./webpack/stylesExtract');
+const stylesExtract = require('./webpack/stylesExtract');
+const styles = require('./webpack/styles');
 const scripts = require('./webpack/scripts');
 const images = require('./webpack/images');
 const fonts = require('./webpack/fonts');
 const templates = require('./webpack/templates');
+const cleanup = require('./webpack/cleanupDist');
+const sourceMaps = require('./webpack/sourceMaps');
 
-const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
@@ -19,10 +21,8 @@ const common = merge([{
     context: source,
     entry: { main: './js/index.js' },
     output: { filename: './js/bundle.js' },
-    devtool: 'source-map',
 
     plugins: [
-        new CleanWebpackPlugin(['dist']),
         new HtmlWebpackPlugin(
             {
                 template: './templates/index.html',
@@ -38,14 +38,36 @@ const common = merge([{
     ]
 }]);
 
-const config = merge(
+const configDev = merge(
     [
         common, 
         styles(cssFolders),
+        sourceMaps(),
         scripts(jsFolders),
         images(ignoredImages),
         fonts(),
         templates(),
     ]
 );
-module.exports = config;
+
+const configProd = merge(
+    [
+        common,
+        cleanup('dist'),
+        stylesExtract(cssFolders),
+        scripts(jsFolders),
+        images(ignoredImages),
+        fonts(),
+        templates(),
+    ]
+);
+
+module.exports = function(env, argv) {
+    if (argv.mode === 'production') {
+        return configProd;
+    }
+    
+    if (argv.mode === 'development') {
+        return configDev;
+    }
+};
