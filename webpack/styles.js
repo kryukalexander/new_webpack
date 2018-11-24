@@ -15,6 +15,7 @@ module.exports = function(paths) {
                         },
                         {
                             loader: 'postcss-loader',
+                            options: { sourceMap: true }
                         },
                         {
                             loader: "sass-loader",
