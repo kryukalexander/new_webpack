@@ -1,3 +1,5 @@
+// todo MiniCssExtractPlugin
+
 const path = require('path');
 const merge = require('webpack-merge');
 const stylesExtract = require('./webpack/stylesExtract');
