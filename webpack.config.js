@@ -1,113 +1,75 @@
+// todo MiniCssExtractPlugin
+
 const path = require('path');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const merge = require('webpack-merge');
+const stylesExtract = require('./webpack/stylesExtract');
+const styles = require('./webpack/styles');
+const scripts = require('./webpack/scripts');
+const images = require('./webpack/images');
+const fonts = require('./webpack/fonts');
+const templates = require('./webpack/templates');
+const cleanup = require('./webpack/cleanupDist');
+const sourceMaps = require('./webpack/sourceMaps');
+
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-let config = {
-    context: path.resolve(__dirname, 'src'),
+const source = path.resolve(__dirname, 'src');
+const cssFolders = path.resolve(__dirname, 'src', 'css');
+const jsFolders = path.resolve(__dirname, 'src', 'js');
+const ignoredImages = path.resolve(__dirname, 'images', 'images-sprite');
+
+const common = merge([{
+    context: source,
     entry: { main: './js/index.js' },
-    output: {
-        filename: './js/bundle.js'
-    },
-    devtool: "source-map",
-    module: {
-        rules: [
-            {
-                test: /\.js$/,
-                include: path.resolve(__dirname, 'src/js'),
-                use: {
-                    loader: 'babel-loader',
-                    options: {
-                        presets: 'env'
-                    }
-                }
-            },
-
-            {
-                test: /\.(sass|scss)$/,
-                include: path.resolve(__dirname, 'src/css'),
-                use: ExtractTextPlugin.extract({
-                    use: [
-                        {
-                            loader: "css-loader",
-                            options: { sourceMap: true }
-                        },
-
-                        {
-                            loader: 'postcss-loader',
-                            options: { sourceMap: true }
-                        },
-
-                        {
-                            loader: "sass-loader",
-                            options: { sourceMap: true }
-                        },
-                    ],
-                    publicPath: '../'
-                })
-            },
-
-            {
-                test: /\.html$/,
-                use: [
-                    {
-                        loader: 'html-loader',
-                        options: { minimize: false }
-                    }
-                ]
-            },
-
-            {
-                test: /\.(jpe?g|png|gif|svg)$/i,
-                exclude: [ path.resolve('images/images-sprite')],
-                use: [
-                    'url-loader?limit=1500&name=[path][name].[ext]',
-                    {
-                        loader: 'img-loader',
-                        options: {
-                            plugins: [
-                                require('imagemin-gifsicle')({}),
-                                require('imagemin-mozjpeg')({}),
-                                require('imagemin-optipng')({}),
-                                require('imagemin-svgo')({})
-                            ]
-                        }
-                    }
-                ]
-            },
-
-            {
-                test: /\.(woff|woff2|ttf)$/i,
-                use: [
-                    'file-loader?name=[path][name].[ext]',
-                ]
-            },
-        ]
-    },
+    output: { filename: './js/bundle.js' },
 
     plugins: [
-        new CleanWebpackPlugin(['dist']),
-        new ExtractTextPlugin({
-            filename: './css/style.css',
-            allChunks: true,
-        }),
-
         new HtmlWebpackPlugin(
             {
                 template: './templates/index.html',
                 filename: './index.html'
             }
         ),
-
         new CopyWebpackPlugin([
-
             {
                 from: './images/sprite.png',
                 to: './images/sprite.png'
             },
         ]),
     ]
-};
+}]);
 
-module.exports = config;
+const configDev = merge(
+    [
+        common, 
+        styles(cssFolders),
+        sourceMaps(),
+        scripts(jsFolders),
+        images(ignoredImages),
+        fonts(),
+        templates(),
+    ]
+);
+
+const configProd = merge(
+    [
+        common,
+        cleanup('dist'),
+        stylesExtract(cssFolders),
+        scripts(jsFolders),
+        images(ignoredImages),
+        fonts(),
+        templates(),
+    ]
+);
+
+module.exports = function(env, argv) {
+    if (argv.mode === 'production') {
+        return configProd;
+    }
+    
+    if (argv.mode === 'development') {
+        return configDev;
+    }
+};
