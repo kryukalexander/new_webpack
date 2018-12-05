@@ -3,7 +3,7 @@ module.exports = function(paths) {
         module: {
             rules: [
                 {
-                    test: /\.(sass|scss)$/,
+                    test: /\.(sa|sc|c)ss$/,
                     include: paths,
                     use: [
                         {
