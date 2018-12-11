@@ -10,6 +10,7 @@ const fonts = require('./webpack/fonts');
 const templates = require('./webpack/templates');
 const cleanup = require('./webpack/cleanupDist');
 const sourceMaps = require('./webpack/sourceMaps');
+const hmr = require('./webpack/hotReload');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
@@ -43,6 +44,7 @@ const common = merge([{
 const configDev = merge(
     [
         common, 
+        hmr(),
         styles(cssFolders),
         sourceMaps(),
         scripts(jsFolders),
