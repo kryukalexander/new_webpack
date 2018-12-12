@@ -1,7 +1,8 @@
 {
   "name": "empty",
   "version": "1.0.0",
-  "description": "",
+  "description": "Boilerplate for new projects",
+  "repository": "https://github.com/kryukalexander/new_webpack",
   "main": "index.js",
   "scripts": {
     "dev": "webpack --mode development",
