@@ -2,5 +2,9 @@ import '../css/style.scss';
 import './main.js';
 
 if (module.hot) {
-    module.hot.accept();
+    module.hot.accept(
+        () => {
+            (err) => { console.log(err) }
+        }
+    );
 }
