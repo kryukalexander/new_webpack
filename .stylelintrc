@@ -1,0 +1,16 @@
+{
+    "extends": "stylelint-config-recommended-scss",
+    "rules": {
+        "color-hex-case": "lower",
+        "property-no-vendor-prefix": true,
+        "declaration-colon-space-after" : "always",
+        "declaration-colon-space-before": "never",
+        "declaration-block-no-duplicate-properties": true,
+        "max-nesting-depth": [3, {
+            "ignore": ["pseudo-classes", "blockless-at-rules"]
+        }],
+        "length-zero-no-unit": true,
+        "no-empty-first-line": true,
+        "max-empty-lines": 2
+    }
+}
