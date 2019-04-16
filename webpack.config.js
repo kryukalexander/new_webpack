@@ -9,10 +9,10 @@ const templates = require('./webpack/templates');
 const cleanup = require('./webpack/cleanupDist');
 const sourceMaps = require('./webpack/sourceMaps');
 const hmr = require('./webpack/hotReload');
+const svgSprite = require('./webpack/spriteExtract');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const SpriteLoaderPlugin = require('svg-sprite-loader/plugin');
 
 const source = path.resolve(__dirname, 'src');
 const cssFolders = path.resolve(__dirname, 'src', 'css');
@@ -41,26 +41,13 @@ const common = merge([
                 },
             ]),
 
-            new SpriteLoaderPlugin()
-        ],
-
-        module: {
-            rules: [
-                {
-                    include: [ icons ],
-                    test: /\.svg$/,
-                    loader: 'svg-sprite-loader',
-                    options: {
-                        extract: true
-                    }
-                }
-            ]
-        },
+        ]
     },
     scripts(jsFolders),
     images(ignoredImages),
     fonts(),
-    templates()
+    templates(),
+    svgSprite(icons)
 ]);
 
 const configDev = merge(
