@@ -12,11 +12,14 @@ const hmr = require('./webpack/hotReload');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const SpriteLoaderPlugin = require('svg-sprite-loader/plugin');
 
 const source = path.resolve(__dirname, 'src');
 const cssFolders = path.resolve(__dirname, 'src', 'css');
 const jsFolders = path.resolve(__dirname, 'src', 'js');
-const ignoredImages = path.resolve(__dirname, 'images', 'images-sprite');
+const icons = path.resolve(__dirname, 'src', 'images', 'icons');
+const sprite = path.resolve(__dirname, 'images', 'images-sprite');
+const ignoredImages = [sprite, icons];
 
 const common = merge([
     {
@@ -37,7 +40,22 @@ const common = merge([
                     to: './images/sprite.png'
                 },
             ]),
-        ]
+
+            new SpriteLoaderPlugin()
+        ],
+
+        module: {
+            rules: [
+                {
+                    include: [ icons ],
+                    test: /\.svg$/,
+                    loader: 'svg-sprite-loader',
+                    options: {
+                        extract: true
+                    }
+                }
+            ]
+        },
     },
     scripts(jsFolders),
     images(ignoredImages),

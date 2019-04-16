@@ -14,7 +14,6 @@ module.exports = function(paths) {
                                     require('imagemin-gifsicle')({}),
                                     require('imagemin-mozjpeg')({}),
                                     require('imagemin-optipng')({}),
-                                    require('imagemin-svgo')({})
                                 ]
                             }
                         }
