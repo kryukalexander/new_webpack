@@ -10,7 +10,6 @@ const cleanup = require('./webpack/cleanupDist');
 const sourceMaps = require('./webpack/sourceMaps');
 const hmr = require('./webpack/hotReload');
 
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const source = path.resolve(__dirname, 'src');
@@ -25,12 +24,6 @@ const common = merge([
         output: { filename: './js/bundle.js' },
 
         plugins: [
-            new HtmlWebpackPlugin(
-                {
-                    template: './templates/index.html',
-                    filename: './index.html'
-                }
-            ),
             new CopyWebpackPlugin([
                 {
                     from: './images/sprite.png',
